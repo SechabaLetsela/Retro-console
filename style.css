@@ -1,0 +1,52 @@
+/* Reset and base styles */
+body {
+    background-color: #0d0d0d;
+    color: #33ff00; /* Classic phosphor green */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    margin: 0;
+    padding: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevents scrollbars unless needed */
+}
+
+/* The main terminal container */
+.terminal {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-shadow: 0 0 5px #33ff00; /* Subtle CRT glow */
+}
+
+/* Where the messages will appear */
+#output {
+    flex-grow: 1;
+    overflow-y: auto;
+    white-space: pre-wrap; /* Preserves formatting and line breaks */
+    margin-bottom: 10px;
+}
+
+/* The bottom input area */
+.input-line {
+    display: flex;
+    align-items: center;
+}
+
+.prompt {
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+/* Hide the default input styling to make it look like part of the terminal */
+#command-input {
+    background: transparent;
+    border: none;
+    color: #33ff00;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    flex-grow: 1;
+    outline: none;
+    text-shadow: 0 0 5px #33ff00;
+    caret-color: #33ff00; /* Makes the blinking cursor green */
+}
