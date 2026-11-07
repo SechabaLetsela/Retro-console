@@ -1,14 +1,32 @@
 /* Reset and base styles */
 body {
-    background-color: #0d0d0d;
-    color: #33ff00; /* Classic phosphor green */
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 18px;
+    background-color: #050505;
+    color: #33ff00; /* Classic Matrix/Animatrix phosphor green */
+    font-family: 'VT323', monospace;
+    font-size: 22px;
     margin: 0;
     padding: 20px;
     height: 100vh;
     box-sizing: border-box;
-    overflow: hidden; /* Prevents scrollbars unless needed */
+    overflow: hidden;
+}
+
+/* The CRT Scanline Overlay */
+.crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none; /* Lets you click through it */
+    z-index: 10;
 }
 
 /* The main terminal container */
@@ -16,21 +34,33 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    text-shadow: 0 0 5px #33ff00; /* Subtle CRT glow */
+    position: relative;
+    z-index: 1;
+    animation: flicker 0.15s infinite; /* Subtle screen flicker */
 }
 
 /* Where the messages will appear */
 #output {
     flex-grow: 1;
     overflow-y: auto;
-    white-space: pre-wrap; /* Preserves formatting and line breaks */
+    white-space: pre-wrap;
     margin-bottom: 10px;
+    text-shadow: 0 0 4px #33ff00, 0 0 8px #33ff00; /* Phosphor glow */
+}
+
+/* Hide scrollbar for a cleaner look */
+#output::-webkit-scrollbar {
+    width: 8px;
+}
+#output::-webkit-scrollbar-thumb {
+    background: #33ff00;
 }
 
 /* The bottom input area */
 .input-line {
     display: flex;
     align-items: center;
+    text-shadow: 0 0 4px #33ff00, 0 0 8px #33ff00;
 }
 
 .prompt {
@@ -38,15 +68,21 @@ body {
     font-weight: bold;
 }
 
-/* Hide the default input styling to make it look like part of the terminal */
 #command-input {
     background: transparent;
     border: none;
     color: #33ff00;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 18px;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
     flex-grow: 1;
     outline: none;
-    text-shadow: 0 0 5px #33ff00;
-    caret-color: #33ff00; /* Makes the blinking cursor green */
+    text-shadow: 0 0 4px #33ff00, 0 0 8px #33ff00;
+    caret-color: #33ff00;
+}
+
+/* Subtle CRT flicker animation */
+@keyframes flicker {
+    0% { opacity: 0.97; }
+    50% { opacity: 1.0; }
+    100% { opacity: 0.98; }
 }

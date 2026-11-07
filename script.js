@@ -1,47 +1,69 @@
-// Get references to our HTML elements
 const output = document.getElementById('output');
 const input = document.getElementById('command-input');
-
-// The key we'll use to save data in the browser
 const STORAGE_KEY = 'retro-console-messages';
 
-// A welcome message when the terminal loads
-window.onload = function() {
-    printLine("Welcome to Retro-Console v1.0");
-    printLine("Type 'help' to see available commands.\n");
-    input.focus(); // Keep the cursor ready to type
+// Prevent user from typing during the boot sequence
+let isBooting = true;
+input.disabled = true;
+
+window.onload = async function() {
+    // The Animatrix-style boot sequence
+    await typeWriter("INITIALIZING SYSTEM KERNEL...", 50);
+    await delay(300);
+    await typeWriter("MOUNTING VIRTUAL DRIVE [OK]", 30);
+    await delay(200);
+    await typeWriter("ESTABLISHING SECURE CONNECTION...", 40);
+    await delay(400);
+    await typeWriter("ACCESS GRANTED.", 60);
+    await delay(200);
+    await typeWriter("Welcome to Retro-Console v1.0", 30);
+    await typeWriter("Type 'help' to see available commands.\n", 20);
+    
+    isBooting = false;
+    input.disabled = false;
+    input.focus();
 };
 
-// Listen for the "Enter" key
-input.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        const command = input.value.trim(); // Get what the user typed
-        input.value = ''; // Clear the input line
-        
-        // Echo the command back to the screen
-        printLine(`user@retro-console:~$ ${command}`);
-        
-        // Process the command
-        processCommand(command);
-        
-        // Auto-scroll to the bottom
-        output.scrollTop = output.scrollHeight;
-    }
-});
+// Helper function for delays
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-// Function to print text to the terminal
+// Typewriter effect function
+async function typeWriter(text, speed = 30) {
+    const line = document.createElement('div');
+    output.appendChild(line);
+    
+    for (let i = 0; i < text.length; i++) {
+        line.textContent += text.charAt(i);
+        output.scrollTop = output.scrollHeight; // Auto-scroll
+        await delay(speed);
+    }
+}
+
+// Instant print for user commands (so it doesn't feel laggy)
 function printLine(text) {
     const line = document.createElement('div');
     line.textContent = text;
     output.appendChild(line);
+    output.scrollTop = output.scrollHeight;
 }
 
-// Function to handle the logic
+input.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !isBooting) {
+        const command = input.value.trim();
+        input.value = '';
+        
+        printLine(`user@retro-console:~$ ${command}`);
+        processCommand(command);
+    }
+});
+
 function processCommand(cmd) {
     const lowerCmd = cmd.toLowerCase();
 
     if (lowerCmd === 'help') {
-        printLine("Available commands:");
+        printLine("AVAILABLE COMMANDS:");
         printLine("  help          - Show this message");
         printLine("  clear         - Clear the terminal screen");
         printLine("  post [msg]    - Add a message to the console");
@@ -49,36 +71,23 @@ function processCommand(cmd) {
         printLine("  wipe          - Delete all messages permanently");
     } 
     else if (lowerCmd === 'clear') {
-        output.innerHTML = ''; // Wipe the visual screen only
+        output.innerHTML = '';
     } 
     else if (lowerCmd.startsWith('post ')) {
-        const message = cmd.substring(5); // Get everything after "post "
-        
+        const message = cmd.substring(5);
         if (message === '') {
-            printLine("Error: Message cannot be empty.");
+            printLine("ERROR: Message cannot be empty.");
             return;
         }
-
-        // 1. Get existing messages or start a new array
         const messages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        
-        // 2. Create a new message object with a timestamp
-        const newMessage = {
-            text: message,
-            date: new Date().toLocaleString()
-        };
-        
-        // 3. Save it back to localStorage
-        messages.push(newMessage);
+        messages.push({ text: message, date: new Date().toLocaleString() });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-        
         printLine(`[SAVED]: "${message}"`);
     } 
     else if (lowerCmd === 'read') {
         const messages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        
         if (messages.length === 0) {
-            printLine("The console is empty. Be the first to post!");
+            printLine("THE CONSOLE IS EMPTY. BE THE FIRST TO POST.");
         } else {
             printLine(`--- RETRIEVING ${messages.length} MESSAGE(S) ---`);
             messages.forEach(msg => {
@@ -89,12 +98,12 @@ function processCommand(cmd) {
     }
     else if (lowerCmd === 'wipe') {
         localStorage.removeItem(STORAGE_KEY);
-        printLine("All messages have been permanently wiped from memory.");
+        printLine("ALL MESSAGES HAVE BEEN PERMANENTLY WIPED FROM MEMORY.");
     }
     else if (lowerCmd === '') {
-        // Do nothing for empty enters
+        // Do nothing
     } 
     else {
-        printLine(`Command not found: ${cmd}. Type 'help' for options.`);
+        printLine(`COMMAND NOT FOUND: ${cmd}. TYPE 'help' FOR OPTIONS.`);
     }
 }
