@@ -54,6 +54,10 @@ async function triggerGhostMessage() {
     // Remove mouse listener
     document.removeEventListener('mousemove', resetIdleTimer);
     
+    // Trigger the Matrix glitch
+    document.querySelector('.desktop').classList.add('glitch-active');
+    setTimeout(() => document.querySelector('.desktop').classList.remove('glitch-active'), 150);
+    
     // Type the ghost message
     await typeWithPauses("You... are not alone.", 100);
 }
