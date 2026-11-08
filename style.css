@@ -19,6 +19,79 @@ body {
     position: relative;
 }
 
+/* --- DESKTOP ICONS --- */
+.desktop-icons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: grid;
+    grid-template-rows: repeat(6, auto); /* 6 rows per column */
+    grid-auto-flow: column; /* Fill columns top-to-bottom, then move right */
+    grid-auto-columns: 80px; /* Each column is 80px wide */
+    gap: 20px 30px; /* 20px vertical gap, 30px horizontal gap between columns */
+    z-index: 1;
+}
+
+/* --- DESKTOP ICONS --- */
+.desktop-icons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: calc(100vh - 74px); /* Full height minus taskbar */
+    gap: 20px;
+    align-content: flex-start;
+    z-index: 1;
+}
+
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    height: 90px; /* Fixed height for consistent alignment */
+    cursor: pointer;
+    user-select: none;
+}
+
+.icon-image {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 4px;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+    height: 48px; /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-label {
+    color: white;
+    font-size: 11px;
+    text-align: center;
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        -1px -1px 2px rgba(0, 0, 0, 0.8),
+        1px -1px 2px rgba(0, 0, 0, 0.8),
+        -1px 1px 2px rgba(0, 0, 0, 0.8);
+    word-wrap: break-word;
+    max-width: 80px;
+    height: 30px; /* Fixed height for label area */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    line-height: 1.2;
+}
+
+/* Position Recycle Bin in bottom-right corner */
+.desktop-icon.recycle-bin {
+    position: absolute;
+    bottom: 54px;
+    right: 20px;
+}
+
 /* GLOBAL VIGNETTE OVERLAY (Darkens the edges of the entire screen) */
 .desktop::before {
     content: '';

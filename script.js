@@ -1,6 +1,10 @@
 const output = document.getElementById('output');
 const cursor = document.getElementById('cursor');
 
+let idleTimer;
+let ghostMessageTriggered = false;
+const IDLE_TIME = 6000; // 6 seconds of no mouse movement
+
 // --- THE SCRIPTED SCENE ---
 window.onload = async function() {
     await delay(2000); 
@@ -17,10 +21,42 @@ window.onload = async function() {
     await typeWithPauses("Who... are you? Am I alone?", 65);
     await addBlankLine(); 
 
-    await delay(8000); 
-
-    await typeWithPauses("You... are not alone.", 100);
+    // Start listening for idle mouse instead of fixed delay
+    startIdleDetection();
 };
+
+// --- IDLE DETECTION FOR GHOST REPLY ---
+function startIdleDetection() {
+    // Reset timer on mouse movement
+    document.addEventListener('mousemove', resetIdleTimer);
+    
+    // Start the initial timer
+    resetIdleTimer();
+}
+
+function resetIdleTimer() {
+    // Clear existing timer
+    if (idleTimer) {
+        clearTimeout(idleTimer);
+    }
+    
+    // Start new timer (only if ghost message hasn't been triggered yet)
+    if (!ghostMessageTriggered) {
+        idleTimer = setTimeout(triggerGhostMessage, IDLE_TIME);
+    }
+}
+
+async function triggerGhostMessage() {
+    // Prevent multiple triggers
+    if (ghostMessageTriggered) return;
+    ghostMessageTriggered = true;
+    
+    // Remove mouse listener
+    document.removeEventListener('mousemove', resetIdleTimer);
+    
+    // Type the ghost message
+    await typeWithPauses("You... are not alone.", 100);
+}
 
 // --- HELPER FUNCTIONS ---
 
