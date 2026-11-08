@@ -47,6 +47,7 @@ body {
 }
 
 .desktop-icon {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -133,37 +134,40 @@ body {
     transform: translateX(-50%);
     width: 800px;
     height: 500px;
-    max-width: 90vw;
+    max-width: 90%;
     max-height: 80vh;
-    border: 2px solid #0058e6;
+    border: 2px solid #003B00;
     border-top: none;
     border-radius: 8px 8px 0 0;
-    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+        4px 4px 15px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(0, 255, 65, 0.15);
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
 .xp-titlebar {
-    background: linear-gradient(to bottom, #0058e6, #3c8df3, #0058e6);
-    color: white;
+    background: #000000;
+    color: #00FF41;
     padding: 4px 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
     font-size: 14px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.8);
+    border-bottom: 1px solid #00FF41;
 }
 
 .xp-controls { display: flex; gap: 2px; }
 
 .xp-btn {
     width: 22px; height: 22px;
-    border: 1px solid white;
+    border: 1px solid #ffffff;
     border-radius: 3px;
-    background: linear-gradient(to bottom, #3c8df3, #0058e6);
-    color: white;
+    background: #000000;
+    color: #ffffff;
     font-weight: bold;
     font-size: 12px;
     cursor: pointer;
@@ -171,9 +175,17 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
 }
 
-.xp-btn.close { background: linear-gradient(to bottom, #e87c7b, #c5221f); }
+.xp-btn.close { 
+    background: #FF0000;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
 
 /* --- THE TERMINAL SCREEN (Now clean, effects are global) --- */
 .xp-content {
@@ -287,4 +299,42 @@ body {
     align-items: center;
     border-left: 1px solid #1c63d4;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+}
+
+/* --- WINDOWS XP TOOLTIPS --- */
+.desktop-icon::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 90px; 
+    top: 14px;
+    width: max-content;
+    max-width: 260px;
+    background-color: #FFFFE1; /* Classic XP pale yellow */
+    color: #000000;
+    border: 1px solid #000000;
+    border-radius: 0;
+    padding: 3px 6px;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: left;
+    text-shadow: none;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.35);
+    white-space: normal;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.08s linear 0.5s, visibility 0s linear 0.5s; /* 0.5s delay */
+    z-index: 50;
+}
+
+.desktop-icon:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Recycle Bin tooltip opens to the LEFT so it doesn't run off-screen */
+.desktop-icon.recycle-bin::after {
+    left: auto;
+    right: 90px;
 }
