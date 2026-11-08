@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro-Console</title>
+    <title>TheMATRIX.exe</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
@@ -17,22 +17,17 @@
         <div class="xp-window">
             <!-- Title Bar -->
             <div class="xp-titlebar">
-                <span class="xp-title">Retro-Console.exe</span>
+                <span class="xp-title">TheMATRIX.exe</span>
                 <div class="xp-controls">
                     <button class="xp-btn minimize">_</button>
                     <button class="xp-btn maximize">□</button>
                     <button class="xp-btn close">X</button>
                 </div>
             </div>
-            <!-- Window Content (Your Terminal) -->
+            <!-- Window Content (The Black Void) -->
             <div class="xp-content">
-                <div class="crt-overlay"></div>
-                <div class="terminal">
-                    <div id="output"></div>
-                    <div class="input-line">
-                        <span class="prompt">user@retro-console:~$ </span>
-                        <input type="text" id="command-input" autofocus autocomplete="off" spellcheck="false">
-                    </div>
+                <div class="terminal" id="output">
+                    <span id="cursor" class="cursor"></span>
                 </div>
             </div>
         </div>

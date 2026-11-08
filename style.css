@@ -3,20 +3,53 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    font-family: 'Tahoma', sans-serif; /* Classic Windows font */
+    font-family: 'Tahoma', sans-serif;
+    /* GLOBAL FLICKER: The whole screen flickers like an old monitor */
+    animation: flicker 0.15s infinite;
 }
 
 .desktop {
     width: 100vw;
     height: 100vh;
-    /* Fallback color just in case */
     background-color: #3c8df3; 
-    /* Point to your local image */
     background-image: url('bliss.png'); 
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
     position: relative;
+}
+
+/* GLOBAL VIGNETTE OVERLAY (Darkens the edges of the entire screen) */
+.desktop::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        transparent 50%,
+        rgba(0, 0, 0, 0.6) 100% /* Heavy darkness at the edges */
+    );
+    pointer-events: none; /* Lets you click through it */
+    z-index: 9999; /* Sits on top of absolutely everything */
+}
+
+/* GLOBAL SCANLINES OVERLAY (Covers the wallpaper, window, and taskbar) */
+.desktop::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.25), /* Slightly darker so it shows up on the bright wallpaper */
+        rgba(0, 0, 0, 0.25) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+    z-index: 9999;
 }
 
 /* --- THE WINDOWS XP WINDOW --- */
@@ -38,7 +71,6 @@ body {
     overflow: hidden;
 }
 
-/* The Blue Title Bar */
 .xp-titlebar {
     background: linear-gradient(to bottom, #0058e6, #3c8df3, #0058e6);
     color: white;
@@ -51,14 +83,10 @@ body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-.xp-controls {
-    display: flex;
-    gap: 2px;
-}
+.xp-controls { display: flex; gap: 2px; }
 
 .xp-btn {
-    width: 22px;
-    height: 22px;
+    width: 22px; height: 22px;
     border: 1px solid white;
     border-radius: 3px;
     background: linear-gradient(to bottom, #3c8df3, #0058e6);
@@ -72,75 +100,71 @@ body {
     padding: 0;
 }
 
-.xp-btn.close {
-    background: linear-gradient(to bottom, #e87c7b, #c5221f);
-}
+.xp-btn.close { background: linear-gradient(to bottom, #e87c7b, #c5221f); }
 
-/* The Content Area (Holds the Terminal) */
+/* --- THE TERMINAL SCREEN (Now clean, effects are global) --- */
 .xp-content {
     flex-grow: 1;
-    background-color: #050505;
+    background-color: #000000;
     position: relative;
     overflow: hidden;
-}
-
-/* --- THE TERMINAL (Kept mostly the same) --- */
-.terminal {
-    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 15px;
     box-sizing: border-box;
-    position: relative;
-    z-index: 1;
-    animation: flicker 0.15s infinite;
 }
 
-#output {
-    flex-grow: 1;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    margin-bottom: 10px;
-    color: #33ff00;
-    font-family: 'VT323', monospace;
+/* --- THE TERMINAL TEXT --- */
+.terminal {
+    color: #ffffff;
+    font-family: 'VT323', 'Courier New', monospace;
     font-size: 22px;
-    text-shadow: 0 0 4px #33ff00, 0 0 8px #33ff00;
-}
+    line-height: 1.2;
+    
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: unset;
+    font-smooth: never;
+    text-rendering: geometricPrecision;
 
-#output::-webkit-scrollbar { width: 8px; }
-#output::-webkit-scrollbar-thumb { background: #33ff00; }
+    /* PHOSPHOR BLOOM + RGB FRINGING */
+    text-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.8),
+        0 0 8px rgba(255, 255, 255, 0.4),
+        0 0 15px rgba(255, 255, 255, 0.2),
+        -1px 0 2px rgba(255, 0, 0, 0.15), 
+        1px 0 2px rgba(0, 100, 255, 0.15); 
 
-.input-line {
+    padding: 15px;
+    
     display: flex;
-    align-items: center;
-    color: #33ff00;
-    font-family: 'VT323', monospace;
-    font-size: 22px;
-    text-shadow: 0 0 4px #33ff00, 0 0 8px #33ff00;
-}
-
-.prompt { margin-right: 8px; font-weight: bold; }
-
-#command-input {
-    background: transparent;
-    border: none;
-    color: #33ff00;
-    font-family: 'VT323', monospace;
-    font-size: 22px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    
+    white-space: pre-wrap;
+    overflow-y: hidden;
     flex-grow: 1;
-    outline: none;
-    text-shadow: 0 0 4px #33ff00, 0 0 8px #33ff00;
-    caret-color: #33ff00;
+    position: relative;
+    z-index: 2; 
 }
 
-/* CRT Scanlines */
-.crt-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
-    pointer-events: none;
-    z-index: 2;
+/* THE BLOCK CURSOR */
+.cursor {
+    display: inline-block;
+    width: 11px;
+    height: 22px;
+    background-color: #ffffff;
+    animation: blink 1s step-end infinite;
+    margin-top: 2px;
+    box-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.8),
+        0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+/* ANIMATIONS */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
 @keyframes flicker {
@@ -164,7 +188,6 @@ body {
     z-index: 20;
 }
 
-/* The Green Start Button */
 .start-btn {
     background: linear-gradient(to bottom, #3cbe3c 0%, #2d932d 50%, #1c8b26 100%);
     color: white;
@@ -181,11 +204,6 @@ body {
     border-right: 2px solid #18721e;
 }
 
-.start-btn span {
-    letter-spacing: -0.5px;
-}
-
-/* The Clock */
 .taskbar-clock {
     background: linear-gradient(to bottom, #1290e9, #0f74c4);
     color: white;
